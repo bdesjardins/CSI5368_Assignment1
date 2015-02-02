@@ -8,11 +8,13 @@ public class Extras {
 	HashMap<String, ?> stopwords;
 	HashMap<String, ?> stemmingSuffixes;
 	HashMap<String, ?> exceptions;
+	HashMap<String, ?> punctuation;
 	
 	public Extras() {
 		this.stopwords = load(new File("InputFiles/stopwords.txt"));
 		this.stemmingSuffixes = load(new File("InputFiles/stemming.txt"));
-		this.exceptions = load(new File("InputFiles/exceptions.txt"));		
+		this.exceptions = load(new File("InputFiles/exceptions.txt"));
+		this.punctuation = load(new File("InputFiles/punctuation.txt"));
 	}
 	
 	public String stemWord(String word) {
@@ -38,6 +40,7 @@ public class Extras {
 	}
 	
 	//If a word is a special case (a time, number, emoticon, etc...)
+	//This method should also detect hyperlinks
 	private boolean isSpecialCase(String word){
 		
 		return false;
