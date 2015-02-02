@@ -38,7 +38,7 @@ public class MessageReader {
 			// process line by line
 			while ((line = br.readLine()) != null) {				
 				//Split on whitespace
-				writer.print(tokenizer.addWhitespace(line));
+				writer.println(tokenizer.addWhitespace(line));
 				writer.flush();				
 			}
 			br.close();
