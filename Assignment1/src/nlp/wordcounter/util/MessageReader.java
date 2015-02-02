@@ -20,7 +20,7 @@ public class MessageReader {
 	int appearOnce = 0;
 
 
-	public void MessageReader(File input, File output) {
+	public MessageReader(File input, File output) {
 		this.input = input;
 		this.output = output;
 
