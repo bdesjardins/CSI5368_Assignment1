@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Hashtable;
+
+import nlp.wordcounter.Tokenizer;
 
 public class MessageReader {
 
@@ -22,6 +25,31 @@ public class MessageReader {
 		this.output = output;
 
 		this.countMap = new Hashtable<String, Integer>();
+	}
+	
+	public void tokenize(){
+		Tokenizer tokenizer = new Tokenizer();
+		
+		try {
+			PrintWriter writer = new PrintWriter("OutputFiles/test.txt", "UTF-8");		
+			BufferedReader br = new BufferedReader(new FileReader(input));
+			String line;
+
+			// process line by line
+			while ((line = br.readLine()) != null) {				
+				//Split on whitespace
+				writer.print(tokenizer.addWhitespace(line));
+				writer.flush();				
+			}
+			br.close();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+//		printToFile();
+		
+		
 	}
 
 	//Run, counting all words as they are
