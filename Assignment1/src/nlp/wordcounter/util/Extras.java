@@ -17,34 +17,21 @@ public class Extras {
 		this.punctuation = load(new File("InputFiles/punctuation.txt"));
 	}
 	
-	public String stemWord(String word) {
-		
-		
-		return null;
-	}
+
 	
 	public boolean isStopWord(String word) {
 		
 		return false;
 	}
 	
-	//If there is punctuation, split it from the word using whitespace
-	public String[] containsPunctuation(String word){
-		
-		//Do not split the word if it is a special case
-		if (isSpecialCase(word)) {
-			return new String[]{word};
-		}
-		
-		return null;
-	}
-	
-	//If a word is a special case (a time, number, emoticon, etc...)
-	//This method should also detect hyperlinks
-	private boolean isSpecialCase(String word){
+	public boolean isPunctuation(String word) {
 		
 		return false;
 	}
+	
+
+	
+
 	
 	private HashMap<String, ?> load(File inputToLoad) {
 		
