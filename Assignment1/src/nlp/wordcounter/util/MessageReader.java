@@ -45,11 +45,7 @@ public class MessageReader {
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-
-//		printToFile();
-		
-		
+		}		
 	}
 
 	//Run, counting all words as they are
