@@ -31,7 +31,7 @@ public class MessageReader {
 		Tokenizer tokenizer = new Tokenizer();
 		
 		try {
-			PrintWriter writer = new PrintWriter("OutputFiles/test.txt", "UTF-8");		
+			PrintWriter writer = new PrintWriter(output, "UTF-8");		
 			BufferedReader br = new BufferedReader(new FileReader(input));
 			String line;
 
