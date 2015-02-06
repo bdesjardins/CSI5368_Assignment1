@@ -13,7 +13,6 @@ public class Tokenizer {
 	String[] suffixes = new String[]{"ed","ing","en","ly","iful","ation","es"};
 	
 	HashMap<String, ?> stopwords;
-	HashMap<String, ?> stemmingSuffixes;
 	HashMap<String, ?> exceptions;
 	HashMap<String, ?> punctuation;
 	
