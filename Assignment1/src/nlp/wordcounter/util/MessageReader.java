@@ -125,7 +125,7 @@ public class MessageReader {
 					String word1 = tokens[i];
 					String word2 = tokens[i+1];
 
-					String bigram = word1 + " " + word2;
+					
 
 					if (ignorePunctuation && punctuation.containsKey(word1)){
 						continue;
@@ -158,10 +158,12 @@ public class MessageReader {
 						}					
 					}
 					
-					if (j >= tokens.length){
+					if (!validWord){
 						continue;
 					}
 
+					String bigram = word1 + " " + word2;
+					
 					int value = 1;
 					if (countMap.get(bigram) != null) {
 						value = countMap.get(bigram) + 1;						
