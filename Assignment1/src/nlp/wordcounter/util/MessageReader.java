@@ -77,7 +77,10 @@ public class MessageReader {
 				for (int i = 0; i < tokens.length; i++) {					
 					int value = 1;
 
-					if(ignorePunctuation && punctuation.containsKey(tokens[i])){
+					if(ignorePunctuation && (punctuation.containsKey(tokens[i]) ||
+							tokens[i].equalsIgnoreCase("...") ||
+							tokens[i].equalsIgnoreCase("!?") ||
+							tokens[i].equalsIgnoreCase("?!"))){
 						continue;
 					} else if(ignoreStopwords && stopwords.containsKey(tokens[i])){
 						continue;
@@ -85,7 +88,7 @@ public class MessageReader {
 						value = countMap.get(tokens[i]) + 1;						
 					}
 					this.tokenCount++;
-					
+
 					if(value == 2) {
 						appearOnce--;
 					}
@@ -106,25 +109,103 @@ public class MessageReader {
 		printToFile();
 	}
 
+	public void countBigrams(boolean ignorePunctuation, boolean ignoreStopwords){
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(input));
+			String line;
+
+			// process line by line
+			while ((line = br.readLine()) != null) {				
+				//Split on whitespace
+				String[] tokens = line.split("\\s");
+
+				//Processing and such will happen in this loop
+				//The extras will be used in this loop
+				for (int i = 0; i < tokens.length-1; i++) {										
+					String word1 = tokens[i];
+					String word2 = tokens[i+1];
+
+					String bigram = word1 + " " + word2;
+
+					if (ignorePunctuation && punctuation.containsKey(word1)){
+						continue;
+					} else if(ignoreStopwords && stopwords.containsKey(word1)){
+						continue;
+					} else if (word1.equalsIgnoreCase("...") || 
+							word1.equalsIgnoreCase("?!") ||
+							word1.equalsIgnoreCase("!?")){
+						continue;
+					}
+
+					boolean validWord = false;
+					int j = i+2;
+
+					while (!validWord && j < tokens.length) {
+						word2 = tokens[j];
+						if(ignorePunctuation && punctuation.containsKey(word2)){
+							j++;
+							continue;
+						} else if(ignoreStopwords && stopwords.containsKey(word2)){
+							j++;
+							continue;
+						} else if (word2.equalsIgnoreCase("...") || 
+								word2.equalsIgnoreCase("?!") ||
+								word2.equalsIgnoreCase("!?")){
+							j++;
+							continue;
+						} else {
+							validWord = true;
+						}					
+					}
+					
+					if (j >= tokens.length){
+						continue;
+					}
+
+					int value = 1;
+					if (countMap.get(bigram) != null) {
+						value = countMap.get(bigram) + 1;						
+					}
+					this.tokenCount++;
+
+					if(value == 2) {
+						appearOnce--;
+					}
+					if(value == 1) {
+						appearOnce++;
+						types++;
+					}
+					countMap.put(bigram, value);
+				}
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//Prints the results of the counting
+		printToFile();
+	}
+
 	//Print the contents of countMap to the output file
 	private void printToFile() {
 		try {
 			PrintWriter writer = new PrintWriter(output, "UTF-8");
-			
+
 			ArrayList<Map.Entry<String, Integer>> sorted = sortValue(countMap);
-			
+
 			writer.println("Number of Tokens: \t\t" + this.tokenCount);
 			writer.println("Number of Types: \t\t" + this.types);
 			writer.println("Type to Token Ratio: \t\t" + (1.0*this.types)/(1.0*this.tokenCount));
 			writer.println("Number of Unique Tokens: \t\t" + this.appearOnce);
-			
+
 			writer.flush();
-			
+
 			for(int i = 0; i < sorted.size(); i++){
 				writer.println(sorted.get(i).getKey() + "\t\t" + sorted.get(i).getValue());
 				writer.flush();	
 			}
-			
+
 			writer.close();
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
