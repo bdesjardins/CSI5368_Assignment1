@@ -74,9 +74,7 @@ public class MessageReader {
 
 				//Processing and such will happen in this loop
 				//The extras will be used in this loop
-				for (int i = 0; i < tokens.length; i++) {
-					this.tokenCount++;
-					
+				for (int i = 0; i < tokens.length; i++) {					
 					int value = 1;
 
 					if(ignorePunctuation && punctuation.containsKey(tokens[i])){
@@ -86,6 +84,7 @@ public class MessageReader {
 					} else if (countMap.get(tokens[i]) != null) {
 						value = countMap.get(tokens[i]) + 1;						
 					}
+					this.tokenCount++;
 					
 					if(value == 2) {
 						appearOnce--;

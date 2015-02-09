@@ -48,32 +48,24 @@ public class Tokenizer {
 	public String[] preProcess(String word){
 		word = word.toLowerCase();
 		
-		String[] tokens = null;
-		
-		//Do not split the word if it is a special case
-		tokens = isSpecialCase(word);
-		if (tokens != null) {
-			return tokens;
-		}
-		
 		if (word.length() <= 1) {
 			return new String[]{word};
 		}
-		
-		String last = "" + word.charAt(word.length()-1);
-		
-		if (punctuation.containsKey(last)){
-			tokens = new String[]{word.substring(0, word.length()-1), last};
-		}
+				
+		String[] tokens = processRecurse(word).toArray(new String[]{});
 			
-		if (tokens == null) {
-			return new String[]{stemWord(word)};
-		} else {
-			for (int i = 0; i < tokens.length; i++) {
-				tokens[i] = stemWord(tokens[i]);
-			}
-			return tokens;
-		}
+
+			
+//		if (tokens == null) {
+//			return new String[]{stemWord(word)};
+//		} else {
+//			for (int i = 0; i < tokens.length; i++) {
+//				tokens[i] = stemWord(tokens[i]);
+//			}
+//			return tokens;
+//		}
+		
+		return tokens;
 	}
 	
 	//Stemming like this feels too random...
@@ -109,15 +101,19 @@ public class Tokenizer {
 	
 	//If a word is a special case (a time, number, emoticon, etc...)
 	//This method should also detect hyperlinks
-	private String[] isSpecialCase(String word){
+	private ArrayList<String> processRecurse(String word){
 		//Check exception list first to reduce overhead
+		ArrayList<String> tokenized = new ArrayList<String>();
+		
 		if (exceptions.containsKey(word)) {
-			return new String[]{word};
+			tokenized.add(word);
+			return tokenized;
 		}
 		
 		//Check for hyperlink, user, or hastag
 		if (word.startsWith("http") || word.startsWith("@") || word.startsWith("#")){
-			return new String[]{word};
+			tokenized.add(word);
+			return tokenized;
 		}
 		
 		//Deal with special punctuation cases
@@ -137,16 +133,38 @@ public class Tokenizer {
 		
 		if (special != null) {
 			if (word.endsWith(special)) {
-				return new String[]{word.substring(0, word.length() - special.length()),
-						word.substring(word.length() - special.length())};
-			} else if (word.startsWith(special)) {
-				return new String[]{word.substring(0, special.length()),
-						word.substring(special.length(), word.length())};
+				tokenized.addAll(processRecurse(word.substring(0, word.length() - special.length())));
+				tokenized.add(word.substring(word.length() - special.length()));
+				return tokenized;
+			} else if (word.startsWith(special)) {			
+				tokenized.add(word.substring(0, special.length()));
+				tokenized.addAll(processRecurse(word.substring(special.length(), word.length())));
+				return tokenized;
 			}
-		}	
+		}
 		
-		//We return null if its not a special case so the other method will know
-		return null;
+		if(word.length() <= 1) {
+			tokenized.add(word);
+			return tokenized;
+		}
+		
+		String last = "" + word.charAt(word.length()-1);
+		String first = "" + word.charAt(0);
+		
+		if (punctuation.containsKey(last)) {
+			tokenized.addAll(processRecurse(word.substring(0, word.length()-1)));
+//			processRecurse(word.substring(0, word.length()-1));
+			tokenized.add(last);
+			return tokenized;
+		} else if (punctuation.containsKey(first)) {
+			tokenized.add(first);
+			tokenized.addAll(processRecurse(word.substring(1)));
+//			processRecurse(word.substring(1));
+			return tokenized;
+		}
+			
+		tokenized.add(word);			
+		return tokenized;
 	}
 	
 	//Method to fill the text lists used for lookup
